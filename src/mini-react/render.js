@@ -1,3 +1,5 @@
+import concurrentModeAndFiberRender from './concurrentModeAndFiber';
+
 function createTextElementDom() {
   return document.createTextNode('');
 }
@@ -22,4 +24,5 @@ function render(element, container) {
   container.appendChild(dom);
 }
 
+export { concurrentModeAndFiberRender };
 export default render;
