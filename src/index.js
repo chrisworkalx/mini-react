@@ -14,4 +14,5 @@ console.log('element', element);
 
 const container = document.querySelector('#root');
 // MyReact.render(element, container);
-MyReact.concurrentModeAndFiberRender(element, container);
+// MyReact.concurrentModeAndFiberRender(element, container);
+MyReact.renderCommit(element, container);

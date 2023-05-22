@@ -1,8 +1,14 @@
 import concurrentModeAndFiberRender from './concurrentModeAndFiber';
+import renderCommit from './renderCommit';
 
 function createTextElementDom() {
   return document.createTextNode('');
 }
+
+/**
+ *
+ * 1. 递归渲染 层级深的话 遍历循环 主线程一直被js调用占用， 会造成浏览器出现卡顿
+ */
 function render(element, container) {
   const dom =
     element.type === 'TEXT_ELEMENT'
@@ -24,5 +30,5 @@ function render(element, container) {
   container.appendChild(dom);
 }
 
-export { concurrentModeAndFiberRender };
+export { concurrentModeAndFiberRender, renderCommit };
 export default render;

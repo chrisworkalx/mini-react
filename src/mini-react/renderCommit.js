@@ -1,5 +1,5 @@
 let nextUnitOfWork = null; //下一个工作单元 可以理解为一个fiber结构
-
+let wipRoot = null;
 /**
  * <div>
  *   <h1>
@@ -18,9 +18,11 @@ function performUnitOfWork(fiber) {
     fiber.dom = createDom(fiber);
   }
 
-  if (fiber.parent) {
-    fiber.parent?.dom.appendChild(fiber.dom);
-  }
+  //删除节点
+
+  // if (fiber.parent) {
+  //   fiber.parent?.dom.appendChild(fiber.dom);
+  // }
 
   // 为当前的节点创建子节点的fiber
 
@@ -62,6 +64,25 @@ function performUnitOfWork(fiber) {
     nextFiber = nextFiber.parent;
   }
 }
+
+function commitWork(fiber) {
+  if (!fiber) {
+    return;
+  }
+
+  //获取父节点
+  const domParent = fiber.parent.dom;
+
+  domParent.appendChild(fiber.dom);
+  commitWork(fiber.child); //循环遍历子节点
+  commitWork(fiber.sibling); //遍历兄弟节点
+}
+
+function commitRoot() {
+  //做真实dom渲染操作
+  commitWork(wipRoot.child);
+  wipRoot = null;
+}
 //执行机制循环
 //目的是为了在浏览器空余时间去执行剩余的任务操作
 function workLoop(deadline) {
@@ -72,11 +93,12 @@ function workLoop(deadline) {
     //得到浏览器当前桢剩余时间
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
     shouldYield = deadline.timeRemaining() > 1;
+    debugger;
+  }
 
-    // 例如开启 debugger
-    // 之所以优化这里是当网络出现异常，渲染会被打断
-    //TODO: 优化我们希望遍历完所有的fiber树 全部提交一次性渲染
-    //优化点见renderCommit.js
+  //当没有工作单元且定义一个用于追踪fiber树 有没有遍历完
+  if (!nextUnitOfWork && wipRoot) {
+    commitRoot();
   }
   //requestIdleCallback 会为参数注入一个当前桢剩余时间方法
   requestIdleCallback(workLoop);
@@ -107,12 +129,15 @@ function createTextElementDom() {
 
 function render(element, container) {
   // 优先创建一个链表头指向根节点
-  nextUnitOfWork = {
+  wipRoot = {
     dom: container,
     props: {
       children: [element]
     }
   };
+
+  //这里建立了一个映射
+  nextUnitOfWork = wipRoot;
 }
 
 export default render;
