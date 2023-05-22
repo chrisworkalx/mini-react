@@ -1,5 +1,6 @@
 import concurrentModeAndFiberRender from './concurrentModeAndFiber';
 import renderCommit from './renderCommit';
+import reconciliation from './reconciliation';
 
 function createTextElementDom() {
   return document.createTextNode('');
@@ -30,5 +31,5 @@ function render(element, container) {
   container.appendChild(dom);
 }
 
-export { concurrentModeAndFiberRender, renderCommit };
+export { concurrentModeAndFiberRender, renderCommit, reconciliation };
 export default render;

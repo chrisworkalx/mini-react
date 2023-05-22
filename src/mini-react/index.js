@@ -1,6 +1,6 @@
 import createElement from './createElement';
 
-import render, { concurrentModeAndFiberRender, renderCommit } from './render';
+import render, { concurrentModeAndFiberRender, renderCommit, reconciliation } from './render';
 
 console.log('concurrentModeAndFiberRender', concurrentModeAndFiberRender);
 
@@ -9,5 +9,6 @@ export default {
   createElement,
   render,
   concurrentModeAndFiberRender,
-  renderCommit
+  renderCommit,
+  reconciliation
 };
